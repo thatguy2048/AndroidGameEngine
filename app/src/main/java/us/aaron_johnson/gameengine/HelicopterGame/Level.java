@@ -21,7 +21,8 @@ import us.aaron_johnson.gameengine.GameEngine.Math.Euclidean.Vector2;
 import us.aaron_johnson.gameengine.GameEngine.Math.Utils;
 
 /**
- * Created by combu on 12/14/2017.
+ * Generates a new level, given the desired specifications.
+ * The level randomly creates points (within a range) for the helicopter to fly through.
  */
 
 

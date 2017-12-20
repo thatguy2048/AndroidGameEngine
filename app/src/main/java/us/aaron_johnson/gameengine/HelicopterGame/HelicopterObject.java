@@ -19,7 +19,7 @@ import us.aaron_johnson.gameengine.GameEngine.Physics.ColliderController;
 import us.aaron_johnson.gameengine.MainActivity;
 
 /**
- * Created by combu on 12/20/2017.
+ * The helicopter.
  */
 
 public class HelicopterObject extends GameObject {
@@ -43,14 +43,17 @@ public class HelicopterObject extends GameObject {
 
         addTransform();
 
+        //Add the level binding component
         LevelBoundComponent lbc = new LevelBoundComponent(this);
         lbc.setLevel(level, Math.min(sizeInUnits.x, sizeInUnits.y));
         this.components.add(lbc);
 
+        //Add the circular collider for the end of the level
         collider = new CircleCollider(this, Math.min(sizeInUnits.x, sizeInUnits.y));
         ColliderController.addColliderToObject(this, collider);
         collider.drawArea = true;
 
+        //load the audio clip for failure
         if(collisionSoundID == Integer.MIN_VALUE){
             collisionSoundID = AudioController.loadSound("boo.mp3");
         }
@@ -73,16 +76,18 @@ public class HelicopterObject extends GameObject {
         super.draw(canvas, camera);
 
         if(!scaled){
+            //scale the image
+            //this only needs to be done once, but can only be done once the camera is available
             scaled = true;
             scaledBitmap = Bitmap.createScaledBitmap(bitmap,camera.worldXDistanceToScreen(sizeInUnits.x),camera.worldYDistanceToScreen(sizeInUnits.y),false);
         }
-
 
         canvas.drawBitmap(scaledBitmap, camera.worldXToScreen(transform.position.x - sizeInUnits.x/2),camera.worldYToScreen(transform.position.y + sizeInUnits.y/2), null);
     }
 
     @Override
     public void onEvent(Class componenetClass, Component trigger, Object value) {
+        //check for an event from the level bound component
         if(componenetClass == LevelBoundComponent.class){
             if((boolean)value == true){ //inside level
 

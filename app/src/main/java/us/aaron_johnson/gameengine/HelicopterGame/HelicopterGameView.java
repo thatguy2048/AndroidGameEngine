@@ -19,7 +19,7 @@ import us.aaron_johnson.gameengine.MainActivity;
 import us.aaron_johnson.gameengine.R;
 
 /**
- * Created by combu on 12/19/2017.
+ * An extension of game view, specifically for the helicopter game.
  */
 
 public class HelicopterGameView extends GameView {
@@ -32,12 +32,15 @@ public class HelicopterGameView extends GameView {
     public HelicopterGameView(Context context, Point screenSize) {
         super(context, screenSize);
 
+        //initialize controllers
+
         colliderController = (ColliderController)addController(new ColliderController(this));
         Collider.controller = colliderController;
 
         audioController = (AudioController)addController(new AudioController(this));
         audioController.setContext(context);
 
+        //create level
         screenSizeInUnits = new Point(427, 240);
         background = new Level(100,100,screenSizeInUnits.y);
 
@@ -52,8 +55,10 @@ public class HelicopterGameView extends GameView {
         helo.transform.velocity.x += 50;
         helo.transform.acceleration.y -= 30;
 
+        //tell the camera to follow the helicopter
         getCamera().followTransform(helo.transform, true, false);
 
+        //add the new game objects
         addGameObject(Common.Layer.MID, helo);
         addGameObject(Common.Layer.BACK, background);
         addGameObject(Common.Layer.MID, ec);
@@ -97,6 +102,8 @@ public class HelicopterGameView extends GameView {
     @Override
     protected void onScreenTouch(MotionEvent touchEvent) {
         LOGD("Screen Touch: "+touchEvent.toString());
+
+        //helicopter controls on screen touch
         if(touchEvent.getAction() == MotionEvent.ACTION_DOWN){
             helo.transform.acceleration.y = 50;
         }else if(touchEvent.getAction() == MotionEvent.ACTION_UP) {

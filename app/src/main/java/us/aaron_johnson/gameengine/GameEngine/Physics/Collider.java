@@ -10,8 +10,8 @@ import us.aaron_johnson.gameengine.GameEngine.Base.Transform2D;
 import us.aaron_johnson.gameengine.GameEngine.Math.Euclidean.Vector2;
 
 /**
- * Created by combu on 12/18/2017.
- * Base class for all other colliders
+ * Base class for all other colliders.
+ * Useful becase collision between different types of colliders is calculated differently
  */
 public abstract class Collider extends Component{
     public enum ColliderType{

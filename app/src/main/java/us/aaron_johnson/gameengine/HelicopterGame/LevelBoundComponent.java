@@ -8,7 +8,7 @@ import us.aaron_johnson.gameengine.GameEngine.Base.GameObject;
 import us.aaron_johnson.gameengine.GameEngine.Math.Euclidean.Vector2;
 
 /**
- * Created by combu on 12/19/2017.
+ * Provides an event like a collision for an object and the level bounds.
  */
 
 public class LevelBoundComponent extends Component {

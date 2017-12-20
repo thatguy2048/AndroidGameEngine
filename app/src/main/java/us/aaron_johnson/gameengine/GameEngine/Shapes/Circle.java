@@ -10,7 +10,7 @@ import us.aaron_johnson.gameengine.GameEngine.Base.GameObject;
 import us.aaron_johnson.gameengine.GameEngine.Base.Transform2D;
 
 /**
- * Created by combu on 12/12/2017.
+ * Just a circle
  */
 
 public class Circle extends GameObject {

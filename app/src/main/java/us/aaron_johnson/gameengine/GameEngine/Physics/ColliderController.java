@@ -8,7 +8,6 @@ import us.aaron_johnson.gameengine.GameEngine.Base.GameObject;
 import us.aaron_johnson.gameengine.GameEngine.Base.GameView;
 
 /**
- * Created by combu on 12/18/2017.
  * Intended to ensure the collision calculations are performed only once an update, instead of for each object.
  */
 

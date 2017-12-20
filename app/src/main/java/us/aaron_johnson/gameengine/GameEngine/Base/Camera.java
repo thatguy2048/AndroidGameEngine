@@ -37,6 +37,7 @@ public class Camera{
     public final int[] sizeInPixels(){  return pixelSize;   }
     public final Vector2 sizeInUnits(){ return unitSize;    }
 
+    //follow a transform with the camera
     public void followTransform(Transform2D transform){
         followTransform(transform, true, true);
     }
@@ -46,6 +47,7 @@ public class Camera{
         followY = yPosition;
     }
 
+    //Set the size of the camera view, both in pixes and game units
     public void setSize(int widthInPixels, int heightInPixels, float widthInUnits, float heightInUnits){
         Log.d("Camera Set Size","Pixel Size: "+widthInPixels+","+heightInPixels+" Unit Size: "+widthInUnits+","+heightInUnits);
         pixelSize[0] = widthInPixels;
@@ -62,6 +64,8 @@ public class Camera{
         positionInPixels[0] = worldXToScreen(position.x,false);
         positionInPixels[1] = worldYToScreen(position.y, false);
     }
+
+    //methods to draw all game objects the camera is told about
 
     public void draw(Canvas canvas, List<GameObject> objects){
         if(toFollow != null){
@@ -89,6 +93,8 @@ public class Camera{
             object.draw(canvas, this);
         }
     }
+
+    //Methods used to transform game space to screen space
 
     public int worldXDistanceToScreen(final float dist){
         return (int)(dist * pixelsPerUnit.x);

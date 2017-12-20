@@ -3,7 +3,6 @@ package us.aaron_johnson.gameengine.GameEngine.Base;
 import android.graphics.Canvas;
 
 /**
- * Created by combu on 12/18/2017.
  * Base class for global controller objects.
  */
 
