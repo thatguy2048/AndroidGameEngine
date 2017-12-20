@@ -28,7 +28,7 @@ import us.aaron_johnson.gameengine.GameEngine.Math.Utils;
 public class Level extends GameObject {
 
     public float heightInUnits = 100;
-    public Vector2 openRange = new Vector2(0.2f, 0.9f);
+    public Vector2 openRange = new Vector2(0.4f, 0.9f);
     public int numberOfPoints = 25;
     public float unitsPerPoint = 10;
     public Paint paint = new Paint();

@@ -1,7 +1,11 @@
 package us.aaron_johnson.gameengine.GameEngine.Physics;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 
+import us.aaron_johnson.gameengine.GameEngine.Base.Camera;
 import us.aaron_johnson.gameengine.GameEngine.Base.GameObject;
 import us.aaron_johnson.gameengine.GameEngine.Math.Euclidean.Vector2;
 
@@ -11,10 +15,16 @@ import us.aaron_johnson.gameengine.GameEngine.Math.Euclidean.Vector2;
 
 public class CircleCollider extends Collider {
     public float radius = 1f;
+    protected Paint paint;
+    public boolean drawArea = false;
 
     public CircleCollider(GameObject gameObject, float radius) {
         super(gameObject, ColliderType.CIRCLE);
         this.radius = radius;
+
+        paint = new Paint();
+        paint.setColor(Color.GREEN);
+        paint.setAlpha(32);
     }
 
     @Override
@@ -38,5 +48,19 @@ public class CircleCollider extends Collider {
     @Override
     public void onCollide(Collider other) {
         gameObject.onEvent(CircleCollider.class, this, other);
+    }
+
+    @Override
+    public void draw(Canvas canvas, Camera camera) {
+        super.draw(canvas, camera);
+        if(drawArea){
+            canvas.drawCircle(
+                    camera.worldXToScreen(gameObject.transform.position.x),
+                    camera.worldYToScreen(gameObject.transform.position.y),
+                    camera.worldXDistanceToScreen(radius),
+                    paint
+            );
+        }
+
     }
 }

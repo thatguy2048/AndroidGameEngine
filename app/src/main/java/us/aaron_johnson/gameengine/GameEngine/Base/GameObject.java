@@ -41,7 +41,9 @@ public abstract class GameObject {
     }
 
     public void draw(Canvas canvas, Camera camera){
-
+        for(Component c: components){
+            c.draw(canvas, camera);
+        }
     }
 
     public void onEvent(Class componenetClass, Component trigger, Object value){

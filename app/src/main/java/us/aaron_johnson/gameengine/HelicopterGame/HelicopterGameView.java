@@ -1,16 +1,22 @@
 package us.aaron_johnson.gameengine.HelicopterGame;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import us.aaron_johnson.gameengine.BoundCircle;
 import us.aaron_johnson.gameengine.GameEngine.Audio.AudioController;
 import us.aaron_johnson.gameengine.GameEngine.Base.Common;
 import us.aaron_johnson.gameengine.GameEngine.Base.GameView;
+import us.aaron_johnson.gameengine.GameEngine.Math.Euclidean.Vector2;
+import us.aaron_johnson.gameengine.GameEngine.Physics.CircleCollider;
 import us.aaron_johnson.gameengine.GameEngine.Physics.Collider;
 import us.aaron_johnson.gameengine.GameEngine.Physics.ColliderController;
 import us.aaron_johnson.gameengine.MainActivity;
+import us.aaron_johnson.gameengine.R;
 
 /**
  * Created by combu on 12/19/2017.
@@ -20,6 +26,8 @@ public class HelicopterGameView extends GameView {
     public AudioController audioController;
     public ColliderController colliderController;
     public Level background;
+
+    protected HelicopterObject helo;
 
     public HelicopterGameView(Context context, Point screenSize) {
         super(context, screenSize);
@@ -33,9 +41,20 @@ public class HelicopterGameView extends GameView {
         screenSizeInUnits = new Point(427, 240);
         background = new Level(100,100,screenSizeInUnits.y);
 
+        //The end object
         EndCircle ec = new EndCircle(250, null);
         ec.transform.position.x = 100*115;
 
+        //The helicopter
+        Bitmap helicopterBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.helicopter);
+        float ratio = helicopterBitmap.getWidth() * 1f / helicopterBitmap.getHeight();
+        helo = new HelicopterObject(new Vector2(50,50/ratio), background, helicopterBitmap);
+        helo.transform.velocity.x += 50;
+        helo.transform.acceleration.y -= 30;
+
+        getCamera().followTransform(helo.transform, true, false);
+
+        addGameObject(Common.Layer.MID, helo);
         addGameObject(Common.Layer.BACK, background);
         addGameObject(Common.Layer.MID, ec);
     }
@@ -77,7 +96,12 @@ public class HelicopterGameView extends GameView {
 
     @Override
     protected void onScreenTouch(MotionEvent touchEvent) {
-
+        LOGD("Screen Touch: "+touchEvent.toString());
+        if(touchEvent.getAction() == MotionEvent.ACTION_DOWN){
+            helo.transform.acceleration.y = 50;
+        }else if(touchEvent.getAction() == MotionEvent.ACTION_UP) {
+            helo.transform.acceleration.y = -30;
+        }
     }
 
     @Override
@@ -99,5 +123,6 @@ public class HelicopterGameView extends GameView {
 
     public static void OnLevelCollision(){
         LOGD("Level Collision");
+        AudioController.mediaPlayer.setVolume(0.5f, 0.5f);
     }
 }

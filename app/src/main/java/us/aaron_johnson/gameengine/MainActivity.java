@@ -38,16 +38,7 @@ public class MainActivity extends Activity {
 
         gv.addGameObject(Common.Layer.SKY, new StarField(gv,100,3000, gv.getScreenWidth(), gv.getScreenHeight()));
 
-        BoundCircle circle = new BoundCircle(gv.background, 50, 50, null);
-        circle.transform.velocity.x += 500;
-        //circle.transform.acceleration.y += 1;
 
-        gv.addGameObject(Common.Layer.MID, circle);
-
-        CircleCollider ncc = new CircleCollider(circle, 50);
-        gv.colliderController.addColliderToObject(circle, ncc);
-
-        gv.getCamera().followTransform(circle.transform, true, false);
 
         setContentView(gv);
     }
