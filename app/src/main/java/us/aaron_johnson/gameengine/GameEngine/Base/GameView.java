@@ -95,6 +95,7 @@ public abstract class GameView extends SurfaceView implements Runnable{
     }
 
     public void addGameObject(int layer, GameObject go){
+        go.gameView = this;
         gameObjects.get(layer-1).add(go);
     }
 
@@ -228,6 +229,8 @@ public abstract class GameView extends SurfaceView implements Runnable{
     protected abstract void onResume();
 
     protected abstract void onScreenTouch(MotionEvent touchEvent);
+
+    public abstract void onGameObjectEvent(GameObject gameObject, Class gameObjectClass, Object data);
 
     //returns the amount of time that has passed since the previous frame
     public long getDeltaTime(){

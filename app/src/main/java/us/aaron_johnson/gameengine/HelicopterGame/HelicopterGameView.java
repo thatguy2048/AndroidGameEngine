@@ -10,7 +10,9 @@ import android.view.MotionEvent;
 import us.aaron_johnson.gameengine.BoundCircle;
 import us.aaron_johnson.gameengine.GameEngine.Audio.AudioController;
 import us.aaron_johnson.gameengine.GameEngine.Base.Common;
+import us.aaron_johnson.gameengine.GameEngine.Base.GameObject;
 import us.aaron_johnson.gameengine.GameEngine.Base.GameView;
+import us.aaron_johnson.gameengine.GameEngine.Images.ImageController;
 import us.aaron_johnson.gameengine.GameEngine.Math.Euclidean.Vector2;
 import us.aaron_johnson.gameengine.GameEngine.Physics.CircleCollider;
 import us.aaron_johnson.gameengine.GameEngine.Physics.Collider;
@@ -25,9 +27,12 @@ import us.aaron_johnson.gameengine.R;
 public class HelicopterGameView extends GameView {
     public AudioController audioController;
     public ColliderController colliderController;
+    public ImageController imageController;
     public Level background;
 
     protected HelicopterObject helo;
+
+    protected boolean finished = false;
 
     public HelicopterGameView(Context context, Point screenSize) {
         super(context, screenSize);
@@ -40,6 +45,8 @@ public class HelicopterGameView extends GameView {
         audioController = (AudioController)addController(new AudioController(this));
         audioController.setContext(context);
 
+        imageController = (ImageController)addController(new ImageController(this, getResources()));
+
         //create level
         screenSizeInUnits = new Point(427, 240);
         background = new Level(100,100,screenSizeInUnits.y);
@@ -49,11 +56,12 @@ public class HelicopterGameView extends GameView {
         ec.transform.position.x = 100*115;
 
         //The helicopter
-        Bitmap helicopterBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.helicopter);
+        Bitmap helicopterBitmap = imageController.loadBitmap(R.drawable.helicopter);
         float ratio = helicopterBitmap.getWidth() * 1f / helicopterBitmap.getHeight();
         helo = new HelicopterObject(new Vector2(50,50/ratio), background, helicopterBitmap);
         helo.transform.velocity.x += 50;
         helo.transform.acceleration.y -= 30;
+        helo.setDrawCollider(true);
 
         //tell the camera to follow the helicopter
         getCamera().followTransform(helo.transform, true, false);
@@ -102,12 +110,13 @@ public class HelicopterGameView extends GameView {
     @Override
     protected void onScreenTouch(MotionEvent touchEvent) {
         LOGD("Screen Touch: "+touchEvent.toString());
-
-        //helicopter controls on screen touch
-        if(touchEvent.getAction() == MotionEvent.ACTION_DOWN){
-            helo.transform.acceleration.y = 50;
-        }else if(touchEvent.getAction() == MotionEvent.ACTION_UP) {
-            helo.transform.acceleration.y = -30;
+        if(!finished) {
+            //helicopter controls on screen touch
+            if (touchEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                helo.transform.acceleration.y = 50;
+            } else if (touchEvent.getAction() == MotionEvent.ACTION_UP) {
+                helo.transform.acceleration.y = -30;
+            }
         }
     }
 
@@ -123,13 +132,32 @@ public class HelicopterGameView extends GameView {
         audioController.startMusic();
     }
 
-    public static void OnEndCollision(){
+    public void OnEndCollision(){
         LOGD("End Collision");
         AudioController.mediaPlayer.reset();
+
+        helo.transform.velocity = new Vector2();
+        helo.transform.acceleration = new Vector2();
+        finished = true;
     }
 
-    public static void OnLevelCollision(){
+    public void OnLevelCollision(){
         LOGD("Level Collision");
         AudioController.mediaPlayer.setVolume(0.5f, 0.5f);
+        helo.transform.velocity = new Vector2();
+        helo.transform.acceleration = new Vector2();
+        finished = true;
+    }
+
+    @Override
+    public void onGameObjectEvent(GameObject gameObject, Class gameObjectClass, Object data) {
+        LOGD("Event Helicopter Game View "+gameObjectClass.toString());
+        if(gameObjectClass == HelicopterObject.class){
+            //assume the helicopter collided with the level
+            OnLevelCollision();
+        }else if(gameObjectClass == EndCircle.class){
+            //assume the helicopter has completed the game
+            OnEndCollision();
+        }
     }
 }

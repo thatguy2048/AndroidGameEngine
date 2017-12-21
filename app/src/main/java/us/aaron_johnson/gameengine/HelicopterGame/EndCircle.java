@@ -46,7 +46,7 @@ public class EndCircle extends Circle {
             }else{
                 Log.d("End Circle Event","Failed to applause");
             }
-            HelicopterGameView.OnEndCollision();
+            gameView.onGameObjectEvent(this, getClass(), value);
         }
     }
 }

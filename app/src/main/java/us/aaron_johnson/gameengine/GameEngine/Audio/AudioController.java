@@ -8,6 +8,8 @@ import android.media.SoundPool;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import us.aaron_johnson.gameengine.GameEngine.Base.Controller;
 import us.aaron_johnson.gameengine.GameEngine.Base.GameView;
@@ -20,6 +22,9 @@ public class AudioController extends Controller {
     public static MediaPlayer mediaPlayer = null;
     protected static Context context = null;
     protected static SoundPool soundPool = null;
+    protected static boolean currentlyPlaying = false;
+
+    public static Map<String, Integer> soundFiles = new HashMap<>();
 
     public static int MAX_SOUNDS = 10;
 
@@ -40,6 +45,10 @@ public class AudioController extends Controller {
 
     public static boolean loadMusic(String filename){
         boolean output = false;
+        if(currentlyPlaying){
+            mediaPlayer.reset();
+            currentlyPlaying = false;
+        }
         try {
             AssetFileDescriptor afd = context.getAssets().openFd(filename);
             mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
@@ -47,6 +56,7 @@ public class AudioController extends Controller {
             mediaPlayer.setVolume(1,1);
             mediaPlayer.prepare();
             output = true;
+            currentlyPlaying = true;
         }catch (IOException e){
             Log.e("AudioController","Loading Music Exception "+e.toString());
         }
@@ -55,11 +65,17 @@ public class AudioController extends Controller {
 
     public static int loadSound(String filename){
         int output = Integer.MIN_VALUE;
-        try {
-            AssetFileDescriptor afd = context.getAssets().openFd(filename);
-            output = soundPool.load(afd, 0);
-        }catch (IOException e){
-            Log.e("AudioController","Loading Sound Exception "+e.toString());
+
+        if(soundFiles.containsKey(filename)){
+            output = soundFiles.get(filename);
+        }else {
+            try {
+                AssetFileDescriptor afd = context.getAssets().openFd(filename);
+                output = soundPool.load(afd, 0);
+                soundFiles.put(filename, output);
+            } catch (IOException e) {
+                Log.e("AudioController", "Loading Sound Exception " + e.toString());
+            }
         }
         return output;
     }

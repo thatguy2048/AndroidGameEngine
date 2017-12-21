@@ -51,7 +51,6 @@ public class HelicopterObject extends GameObject {
         //Add the circular collider for the end of the level
         collider = new CircleCollider(this, Math.min(sizeInUnits.x, sizeInUnits.y));
         ColliderController.addColliderToObject(this, collider);
-        collider.drawArea = true;
 
         //load the audio clip for failure
         if(collisionSoundID == Integer.MIN_VALUE){
@@ -59,6 +58,10 @@ public class HelicopterObject extends GameObject {
         }
 
         paint.setColor(Color.GREEN);
+    }
+
+    public void setDrawCollider(boolean toDraw){
+        collider.drawArea = toDraw;
     }
 
     @Override
@@ -100,9 +103,7 @@ public class HelicopterObject extends GameObject {
                     Log.d("Helicopter Event","Failed to boo");
                 }
 
-                transform.velocity = new Vector2();
-                transform.acceleration = new Vector2();
-                HelicopterGameView.OnLevelCollision();
+                gameView.onGameObjectEvent(this, getClass(), true);
             }
         }else if(componenetClass == CircleCollider.class) {
             transform.velocity = new Vector2();

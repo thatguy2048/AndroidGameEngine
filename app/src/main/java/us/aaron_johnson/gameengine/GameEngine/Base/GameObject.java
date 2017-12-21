@@ -14,6 +14,7 @@ public abstract class GameObject {
     public Transform2D transform = null;
     int drawLayer = Common.Layer.MID;
     public List<Component> components = new ArrayList<>();
+    public GameView gameView = null;
 
     public Transform2D addTransform(){
         this.transform = new Transform2D(this);
